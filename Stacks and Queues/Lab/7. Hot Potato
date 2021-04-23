@@ -1,0 +1,38 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace AdvanceStacksAndQueues
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string[] children = Console.ReadLine().Split();
+            int n = int.Parse(Console.ReadLine());
+            Queue<string> patatoBall = new Queue<string>(children);
+
+            int patato = 0;
+
+            while (patatoBall.Count > 1)
+            {
+                patato++;
+
+                string kids = patatoBall.Dequeue();
+
+                if (patato == n)
+                {
+                    patato = 0;
+                    Console.WriteLine("Removed " + kids);
+                }
+                else
+                {
+                    patatoBall.Enqueue(kids);
+                }
+            }
+
+            Console.WriteLine("Last is " + patatoBall.Dequeue());
+
+        }
+    }
+}
