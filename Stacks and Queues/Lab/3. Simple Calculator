@@ -1,0 +1,33 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace AdvanceStacksAndQueues
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string[] input = Console.ReadLine().Split();
+            Stack<string> exspression = new Stack<string>(input.Reverse());
+
+            while (exspression.Count > 1)
+            {
+                int leftNumber = int.Parse(exspression.Pop());
+                string sign = exspression.Pop();
+                int rightNumber = int.Parse(exspression.Pop());
+
+                if (sign == "+")
+                {
+                    exspression.Push((leftNumber + rightNumber).ToString());
+                }
+                else if (sign == "-")
+                {
+                    exspression.Push((leftNumber - rightNumber).ToString());
+                }
+            }
+
+            Console.WriteLine(exspression.Pop());
+        }
+    }
+}
