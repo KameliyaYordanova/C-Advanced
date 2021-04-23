@@ -1,0 +1,26 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace AdvanceStacksAndQueues
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+
+            int[] diggits = Console.ReadLine().Split().Select(int.Parse).ToArray();
+            Queue<int> numbs = new Queue<int>();
+
+            for (int i = 0; i < diggits.Length; i++)
+            {
+                if (diggits[i] % 2 == 0)
+                {
+                    numbs.Enqueue(diggits[i]);
+                }
+            }
+
+            Console.WriteLine(string.Join(", ", numbs));
+        }
+    }
+}
