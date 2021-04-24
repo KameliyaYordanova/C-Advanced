@@ -1,0 +1,56 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Exser
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int[] numbers = Console.ReadLine().Split().Select(int.Parse).ToArray();
+            int N = numbers[0];
+            int S = numbers[1];
+            int X = numbers[2];
+
+            Queue<int> stack = new Queue<int>();
+            List<int> digit = Console.ReadLine().Split().Select(int.Parse).ToList();
+
+            for (int i = 0; i < N; i++)
+            {
+                stack.Enqueue(digit[i]);
+            }
+            for (int i = 0; i < S; i++)
+            {
+                stack.Dequeue();
+            }
+
+            if (stack.Contains(X))
+            {
+                Console.WriteLine("true");
+            }
+            else
+            {
+                if (stack.Count == 0)
+                {
+                    Console.WriteLine(0);
+                }
+                else
+                {
+                    int minElement = int.MaxValue;
+                    foreach (int item in stack)
+                    {
+                        if (item < minElement)
+                        {
+                            minElement = item;
+                        }
+                    }
+
+                    Console.WriteLine(minElement);
+                }
+
+            }
+        }
+    }
+}
