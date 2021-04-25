@@ -1,0 +1,41 @@
+using System;
+using System.Linq;
+
+namespace JaggedArry
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int n = int.Parse(Console.ReadLine());
+
+            int[,] matrix = new int[n, n];
+            int sum = 0;
+
+            for (int row = 0; row < matrix.GetLength(0); row++)
+            {
+                int[] currentRow = Console.ReadLine().Split(" ").Select(int.Parse).ToArray();
+
+                for (int col = 0; col < matrix.GetLength(1); col++)
+                {
+                    matrix[row, col] = currentRow[col];
+                }
+            }
+
+            for (int row = 0; row < n; row++)
+            {
+                for (int col = 0; col < n; col++)
+                {
+                    int current = matrix[row, col];
+
+                    if (row == col)
+                    {
+                        sum += current;
+                    }
+                }
+            }
+
+            Console.WriteLine(sum);
+        }
+    }
+}
