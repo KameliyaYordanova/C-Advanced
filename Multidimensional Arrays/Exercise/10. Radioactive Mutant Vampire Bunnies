@@ -1,0 +1,182 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace _10.RadioactiveMutantVampireBunnies
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int[] dimesions = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
+            int rows = dimesions[0];
+            int cols = dimesions[1];
+
+            char[,] matrix = new char[rows, cols];
+            int playerRow = -1;
+            int playerCol = -1;
+
+            for (int row = 0; row < rows; row++)
+            {
+                char[] rowData = Console.ReadLine().ToCharArray();
+
+                for (int col = 0; col < cols; col++)
+                {
+                    matrix[row, col] = rowData[col];
+                    if (matrix[row, col] == 'P')
+                    {
+                        playerRow = row;
+                        playerCol = col;
+                    }
+                }
+            }
+            char[] directions = Console.ReadLine().ToCharArray();
+            bool isWon = false;
+            bool isDead = false;
+
+            foreach (char item in directions)
+            {
+                int newPlayerRow = playerRow;
+                int newPlayerCol = playerCol;
+
+                if (item == 'U')
+                {
+                    newPlayerRow--;
+                }
+                else if (item == 'D')
+                {
+                    newPlayerRow++;
+                }
+                else if (item == 'L')
+                {
+                    newPlayerCol--;
+                }
+                else if (item == 'R')
+                {
+                    newPlayerCol++;
+                }
+
+                if (!IsValidCell(newPlayerRow, newPlayerCol, rows, cols))
+                {
+                    isWon = true;
+                    matrix[playerRow, playerCol] = '.';
+
+                    List<int[]> bunnies = GetBunnies(matrix);
+                    SpreadBunnies(bunnies, matrix);
+
+                }
+                else if (matrix[newPlayerRow, newPlayerCol] == '.')
+                {
+                    matrix[playerRow, playerCol] = '.';
+                    matrix[newPlayerRow, newPlayerCol] = 'P';
+                    playerRow = newPlayerRow;
+                    playerCol = newPlayerCol;
+
+                    List<int[]> bunnies = GetBunnies(matrix);
+                    SpreadBunnies(bunnies, matrix);
+
+                    if (matrix[playerRow, playerCol] == 'B')
+                    {
+                        isDead = true;
+                    }
+                }
+                else if (matrix[newPlayerRow, newPlayerCol] == 'B')
+                {
+                    isDead = true;
+                    matrix[playerRow, playerCol] = '.';
+                    playerRow = newPlayerRow;
+                    playerCol = newPlayerCol;
+
+                    List<int[]> bunnies = GetBunnies(matrix);
+                    SpreadBunnies(bunnies, matrix);
+                }
+
+                if (isDead || isWon)
+                {
+                    break;
+                }
+            }
+
+            PrintField(matrix);
+            string res = "";
+
+            if (isWon)
+            {
+                res += "won";
+            }
+            else
+            {
+                res += "dead";
+            }
+
+            res += $": {playerRow} {playerCol}";
+
+            Console.WriteLine(res);
+        }
+
+        private static void PrintField(char[,] matrix)
+        {
+
+            for (int row = 0; row < matrix.GetLength(0); row++)
+            {
+                for (int col = 0; col < matrix.GetLength(1); col++)
+                {
+                    Console.Write(matrix[row, col]);
+                }
+
+                Console.WriteLine();
+            }
+        }
+
+        private static void SpreadBunnies(List<int[]> bunnies, char[,] matrix)
+        {
+
+            foreach (int[] bunny in bunnies)
+            {
+                int row = bunny[0];
+                int col = bunny[1];
+
+                SpreadBunnny(row - 1, col, matrix);
+                SpreadBunnny(row + 1, col, matrix);
+                SpreadBunnny(row, col - 1, matrix);
+                SpreadBunnny(row, col + 1, matrix);
+
+
+            }
+        }
+
+        private static void SpreadBunnny(int row, int col, char[,] matrix)
+        {
+
+            int rowsLength = matrix.GetLength(0);
+            int colsLength = matrix.GetLength(1);
+
+            if (IsValidCell(row, col, rowsLength, colsLength))
+            {
+                matrix[row, col] = 'B';
+            }
+        }
+
+        private static List<int[]> GetBunnies(char[,] matrix)
+        {
+            List<int[]> bunnies = new List<int[]>();
+
+            for (int row = 0; row < matrix.GetLength(0); row++)
+            {
+                for (int col = 0; col < matrix.GetLength(1); col++)
+                {
+                    if (matrix[row, col] == 'B')
+                    {
+                        bunnies.Add(new int[] { row, col });
+                    }
+                }
+            }
+            return bunnies;
+        }
+
+        private static bool IsValidCell(int row, int col, int rows, int cols)
+        {
+            return row >= 0 && row < rows && col >= 0 && col < cols;
+        }
+    }
+}
