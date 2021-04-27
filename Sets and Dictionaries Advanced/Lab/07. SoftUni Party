@@ -1,0 +1,55 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace SetsAndDictionaries
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            HashSet<string> goest = new HashSet<string>();
+
+            string command = Console.ReadLine();
+
+            while (command != "PARTY")
+            {
+                goest.Add(command);
+
+                command = Console.ReadLine();
+            }
+
+            while (command != "END")
+            {
+                if (goest.Contains(command))
+                {
+                    goest.Remove(command);
+                }
+
+                command = Console.ReadLine();
+            }
+
+            Console.WriteLine(goest.Count);
+
+            foreach (var gost in goest)
+            {
+                char[] element = gost.ToCharArray();
+
+                if (char.IsDigit(element[0]))
+                {
+                    Console.WriteLine(gost);
+                }
+            }
+
+            foreach (var item in goest)
+            {
+                char[] symbol = item.ToCharArray();
+
+                if (char.IsLetter(symbol[0]))
+                {
+                    Console.WriteLine(item);
+                }
+            }
+        }
+    }
+}
