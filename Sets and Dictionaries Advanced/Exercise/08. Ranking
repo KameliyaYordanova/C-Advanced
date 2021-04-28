@@ -1,0 +1,81 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace _8.Ranking
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Dictionary<string, string> contestsData = new Dictionary<string, string>();
+
+            string input = Console.ReadLine();
+
+            while (input != "end of contests")
+            {
+                string[] contest = input.Split(":", StringSplitOptions.RemoveEmptyEntries);
+                contestsData.Add(contest[0], contest[1]);
+
+                input = Console.ReadLine();
+            }
+
+            SortedDictionary<string, Dictionary<string, int>> usersSubmission =
+                new SortedDictionary<string, Dictionary<string, int>>();
+
+            string submissionInput = Console.ReadLine();
+
+            while (submissionInput != "end of submissions")
+            {
+                string[] submisionData = submissionInput.Split("=>", StringSplitOptions.RemoveEmptyEntries);
+                string contests = submisionData[0];
+                string password = submisionData[1];
+                string username = submisionData[2];
+                int points = int.Parse(submisionData[3]);
+
+                if (!contestsData.ContainsKey(contests) || contestsData[contests] != password)
+                {
+                    submissionInput = Console.ReadLine();
+                    continue;
+                }
+
+                if (!usersSubmission.ContainsKey(username))
+                {
+                    usersSubmission.Add(username, new Dictionary<string, int>());
+                }
+
+                if (!usersSubmission[username].ContainsKey(contests))
+                {
+                    usersSubmission[username].Add(contests, points);
+                }
+                else
+                {
+                    int oldPoint = usersSubmission[username][contests];
+                    if (points > oldPoint)
+                    {
+                        usersSubmission[username][contests] = points;
+                    }
+                }
+
+                submissionInput = Console.ReadLine();
+            }
+
+            KeyValuePair<string, Dictionary<string, int>> bestCandidate =
+                  usersSubmission.OrderByDescending(kvp => kvp.Value.Values.Sum()).First();
+
+            int totalPoints = bestCandidate.Value.Values.Sum();
+            Console.WriteLine($"Best candidate is {bestCandidate.Key} with total {totalPoints} points.");
+            Console.WriteLine("Ranking:");
+
+            foreach (var user in usersSubmission)
+            {
+                Console.WriteLine(user.Key);
+
+                foreach (var contestData in user.Value.OrderByDescending(kvp => kvp.Value))
+                {
+                    Console.WriteLine($"#  {contestData.Key} -> {contestData.Value}");
+                }
+            }
+        }
+    }
+}
