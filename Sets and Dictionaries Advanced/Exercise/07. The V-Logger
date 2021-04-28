@@ -1,0 +1,95 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace _8.Ranking
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+
+            Dictionary<string, HashSet<string>> vloggerWithFollowers = new Dictionary<string, HashSet<string>>();
+            Dictionary<string, HashSet<string>> vloggerWithFollwings = new Dictionary<string, HashSet<string>>();
+
+
+            string command = Console.ReadLine();
+
+            while (command != "Statistics")
+            {
+                ProcessInput(vloggerWithFollowers, vloggerWithFollwings, command);
+
+                command = Console.ReadLine();
+            }
+
+            vloggerWithFollowers = vloggerWithFollowers.OrderByDescending(kvp => kvp.Value.Count)
+                .ThenBy(kvp => vloggerWithFollwings[kvp.Key].Count)
+                .ToDictionary(a => a.Key, b => b.Value);
+
+            int count = 1;
+
+            Console.WriteLine($"The V-Logger has a total of {vloggerWithFollowers.Count} vloggers in its logs.");
+
+            var mostFamousVllogger = vloggerWithFollowers.First();
+            string mostFamousVloggerName = mostFamousVllogger.Key;
+            HashSet<string> mostFamousVloggerFollwers = mostFamousVllogger.Value
+                .OrderBy(n => n)
+                .ToHashSet();
+
+            Console.WriteLine($"{count++}. {mostFamousVloggerName} : {mostFamousVloggerFollwers.Count} " +
+                $"followers, {vloggerWithFollwings[mostFamousVloggerName].Count} following");
+
+            foreach (var follower in mostFamousVloggerFollwers)
+            {
+                Console.WriteLine($"*  {follower}");
+            }
+
+            foreach (var vloggerFollowersPair in vloggerWithFollowers.Skip(1))
+            {
+                Console.WriteLine($"{count++}. {vloggerFollowersPair.Key} : " +
+                    $"{vloggerFollowersPair.Value.Count} followers, " +
+                    $"{vloggerWithFollwings[vloggerFollowersPair.Key].Count} following");
+            }
+        }
+
+        private static void ProcessInput(Dictionary<string, HashSet<string>> vloggerWithFollowers, Dictionary<string, HashSet<string>> vloggerWithFollwings, string command)
+        {
+            string[] comArg = command.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToArray();
+            string cmdType = comArg[1];
+
+            if (cmdType == "joined")
+            {
+                JoinedVlogger(vloggerWithFollowers, vloggerWithFollwings, comArg);
+            }
+            else if (cmdType == "followed")
+            {
+                Follwed(vloggerWithFollowers, vloggerWithFollwings, comArg);
+            }
+        }
+
+        private static void Follwed(Dictionary<string, HashSet<string>> vloggerWithFollowers, Dictionary<string, HashSet<string>> vloggerWithFollwings, string[] comArg)
+        {
+            string follwer = comArg[0];
+            string toBeFollowed = comArg[2];
+
+            if (follwer != toBeFollowed)
+            {
+                if (vloggerWithFollowers.ContainsKey(toBeFollowed) && vloggerWithFollwings.ContainsKey(follwer))
+                {
+                    vloggerWithFollowers[toBeFollowed].Add(follwer);
+                    vloggerWithFollwings[follwer].Add(toBeFollowed);
+                }
+            }
+        }
+
+        private static void JoinedVlogger(Dictionary<string, HashSet<string>> vloggerWithFollowers, Dictionary<string, HashSet<string>> vloggerWithFollwings, string[] comArg)
+        {
+            string vloggerToJoin = comArg[0];
+            if (!vloggerWithFollowers.ContainsKey(vloggerToJoin))
+            {
+                vloggerWithFollowers[vloggerToJoin] = new HashSet<string>();
+                vloggerWithFollwings[vloggerToJoin] = new HashSet<string>();
+            }
+        }
+    }
+}
