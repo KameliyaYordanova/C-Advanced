@@ -1,0 +1,21 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace FuncionalnoProgtram
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Func<int[], int> output = x => x.Min();
+
+            int[] number = Console.ReadLine()
+                    .Split(" ", StringSplitOptions.RemoveEmptyEntries)
+                    .Select(int.Parse)
+                    .ToArray();
+
+            Console.WriteLine(output(number));
+        }
+    }
+}
