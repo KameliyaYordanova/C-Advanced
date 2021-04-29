@@ -1,0 +1,25 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace FuncionalnoProgtram
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var arry = Console.ReadLine()
+                .Split()
+                .Select(int.Parse);
+
+            int n = int.Parse(Console.ReadLine());
+
+            Predicate<int> filter = x => x % n != 0;
+            Func<int, bool> filterFunc = x => filter(x);
+
+            arry = arry.Where(filterFunc);
+
+            Console.WriteLine(string.Join(" ", arry.Reverse()));
+        }
+    }
+}
