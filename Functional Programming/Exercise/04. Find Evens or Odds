@@ -1,0 +1,28 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace FuncionalnoProgtram
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Predicate<int> even = x => x % 2 == 0;
+            var input = Console.ReadLine()
+                .Split()
+                .Select(int.Parse)
+                .ToArray();
+
+            string command = Console.ReadLine();
+            List<int> result = new List<int>();
+
+            Enumerable.Range(input[0], input[1] - input[0] + 1)
+                .Where(x => command == "even" ? even(x) : !even(x))
+                .ToList()
+                .ForEach(result.Add);
+
+            Console.WriteLine(string.Join(" ", result));
+        }
+    }
+}
