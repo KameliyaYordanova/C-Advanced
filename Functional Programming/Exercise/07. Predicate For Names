@@ -1,0 +1,23 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace FuncionalnoProgtram
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int n = int.Parse(Console.ReadLine());
+
+            Predicate<string> filterByLength = x => x.Length <= n;
+
+            Console.ReadLine()
+                .Split()
+                .Where(a => filterByLength(a))
+                .ToList()
+                .ForEach(Console.WriteLine);
+
+        }
+    }
+}
