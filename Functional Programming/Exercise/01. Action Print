@@ -1,0 +1,18 @@
+using System;
+using System.Linq;
+
+namespace FuncionalnoProgtram
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string[] name = Console.ReadLine()
+                    .Split(" ", StringSplitOptions.RemoveEmptyEntries);
+
+            Action<string> message = x => Console.WriteLine(x);
+            name.ToList()
+                .ForEach(x => message(x));
+        }
+    }
+}
