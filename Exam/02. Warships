@@ -1,0 +1,108 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Warships
+{
+    class Program
+    {
+        static int n;
+        static char[,] matrix;
+        static int nPlayerOneShipsCount = 0;
+        static int nPlayerTwoShipsCount = 0;
+        static int nDestroyedShipsCount = 0;
+
+        static void Main(string[] args)
+        {
+            n = int.Parse(Console.ReadLine());
+            matrix = new char[n, n];
+
+            string[] arrPlayerMoves = Console.ReadLine().Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+            for (int row = 0; row < n; row++)
+            {
+                var currentRow = Console.ReadLine().Replace(" ", "");
+
+                for (int col = 0; col < n; col++)
+                {
+                    matrix[row, col] = currentRow[col];
+
+                    if (matrix[row, col] == '<')
+                        nPlayerOneShipsCount++;
+                    else if (matrix[row, col] == '>')
+                        nPlayerTwoShipsCount++;
+                }
+            }
+
+            for (int i = 0; i < arrPlayerMoves.Length; i++)
+            {
+                string[] arrAttackPosition = arrPlayerMoves[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                int nAttackX = int.Parse(arrAttackPosition[0]);
+                int nAttackY = int.Parse(arrAttackPosition[1]);
+
+                bool validAttack = nAttackX >= 0 && nAttackX < n && nAttackY >= 0 && nAttackY < n;
+                if (!validAttack)
+                    continue;
+
+                char chAttackHit = matrix[nAttackX, nAttackY];
+
+                if (chAttackHit == '>' || chAttackHit == '<' || chAttackHit == '#')
+                {
+                    HitObject(nAttackX, nAttackY);
+
+                    if (chAttackHit == '#')
+                        ExplodeMine(nAttackX, nAttackY);
+
+                    if (nPlayerOneShipsCount == 0 || nPlayerTwoShipsCount == 0)
+                        break;
+                }
+            }
+
+            if (nPlayerOneShipsCount > 0 && nPlayerTwoShipsCount > 0)
+                Console.WriteLine($"It's a draw! Player One has {nPlayerOneShipsCount} ships left. " +
+                    $"Player Two has {nPlayerTwoShipsCount} ships left.");
+            else
+            {
+                string strPlayer = nPlayerOneShipsCount > 0 ? "One" : "Two";
+                Console.WriteLine($"Player {strPlayer} has won the game! " +
+                    $"{nDestroyedShipsCount} ships have been sunk in the battle.");
+            }
+        }
+
+        private static void HitObject(int nAttackX, int nAttackY)
+        {
+            bool validAttack = nAttackX >= 0 && nAttackX < n && nAttackY >= 0 && nAttackY < n;
+            if (validAttack)
+            {
+                char chHit = matrix[nAttackX, nAttackY];
+
+                if (chHit == '<')
+                {
+                    nDestroyedShipsCount++;
+                    nPlayerOneShipsCount--;
+                }
+                else if (chHit == '>')
+                {
+                    nDestroyedShipsCount++;
+                    nPlayerTwoShipsCount--;
+                }
+
+                matrix[nAttackX, nAttackY] = 'X';
+            }
+        }
+
+        private static void ExplodeMine(int nAttackX, int nAttackY)
+        {
+            HitObject(nAttackX - 1, nAttackY); 
+            HitObject(nAttackX, nAttackY - 1); 
+            HitObject(nAttackX + 1, nAttackY);
+            HitObject(nAttackX, nAttackY + 1);
+
+            HitObject(nAttackX - 1, nAttackY - 1);
+            HitObject(nAttackX - 1, nAttackY + 1); 
+            HitObject(nAttackX + 1, nAttackY - 1); 
+            HitObject(nAttackX + 1, nAttackY + 1); 
+        }
+    }
+}
